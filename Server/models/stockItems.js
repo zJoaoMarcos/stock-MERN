@@ -9,15 +9,7 @@ const itemsSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    stock: {
-        type: Number,
-        required: true,
-    },
-    stockMin: {
-        type: Number,
-        required: true,
-    },
 });
 
-const stockItems = mongoose.model("stockItems", itemsSchema);
+const stockItems = mongoose.model("items", itemsSchema);
 module.exports = stockItems;

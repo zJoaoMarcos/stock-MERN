@@ -1,12 +1,14 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');
 const app = express();
 require('dotenv').config()
 
 
-const ItemsModel = require('./models/stockItems')
+const ItemModel = require('./models/stockItems')
 
-app.use(express.json())
+app.use(express.json());
+app.use(cors());
 
 mongoose.connect(
     `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.10gbm.mongodb.net/${process.env.MONGO_COLLECTION}?retryWrites=true&w=majority`,
@@ -15,13 +17,14 @@ mongoose.connect(
     }
 );
 
-app.get('/', async (req, res) => {
-    const item = new ItemsModel(
+app.post('/insert', async (req, res) => {
+    const itemName = req.body.itemName;
+    const itemType = req.body.itemType;
+
+    const item = new ItemModel(
         {
-            itemName: "Ramal",
-            itemType: "Periférico",
-            stock: "21",
-            stockMin: "10"
+            itemName: itemName,
+            itemType: itemType,
         }
     );
 
@@ -31,6 +34,16 @@ app.get('/', async (req, res) => {
     } catch (err) {
         console.log(err);
     }
+});
+
+app.get('/read', async (req, res) => {
+    ItemModel.find({}, (err, result) => {
+        if (err) {
+            res.send(err)
+        }
+        res.send(result);
+
+    })
 });
 
 app.listen(3001, () => {
